@@ -340,23 +340,12 @@ document.addEventListener("DOMContentLoaded", () => {
     cardsByFamily.set(normalizeCatalogValue(family), card);
   });
 
-  const localCatalogImages = new Set([
-    "pierre-volcanique-noire.jpg",
-    "travertin-volubilis.jpg",
-    "realisation-exterieur.jpg",
-    "eclate-beige.jpg",
-    "pierre-taza-grise.jpg",
-    "granit-gris-khenifra.jpg",
-    "noir-azilal.jpg"
-  ]);
   const newStoneGroups = new Map();
   const noDuplicateImageProducts = [];
   const officialStones = Array.isArray(window.hamzaStoneCatalog) ? window.hamzaStoneCatalog : [];
 
   officialStones.forEach((stone) => {
-    const source = localCatalogImages.has(stone.image)
-      ? `images/stones/${stone.image}`
-      : `images/stones/official/${stone.image}`;
+    const source = stone.image;
     const family = getStoneFamily(stone.name);
     const familyKey = normalizeCatalogValue(family);
     const currentCard = cardsByFamily.get(familyKey);
