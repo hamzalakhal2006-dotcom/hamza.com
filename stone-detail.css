@@ -1,0 +1,63 @@
+.stone-detail-page {
+  min-height: 100vh;
+  color: #f5f2eb;
+  background: #171816;
+}
+.stone-detail-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: 82px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px max(24px, calc((100vw - 1240px) / 2));
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+  background: #171816;
+}
+.stone-detail-header img { width: 225px; height: 54px; object-fit: contain; }
+.stone-detail-header a:last-child { color: #e4d7c3; font-size: 12px; }
+.stone-detail-main { width: min(1240px, calc(100% - 48px)); margin: 0 auto; padding: 35px 0 90px; }
+.stone-breadcrumbs { margin: 0 0 22px; color: #bcb9b0; font-size: 11px; }
+.stone-breadcrumbs a { text-decoration: underline; text-decoration-color: #b8a17c; text-underline-offset: 4px; }
+.stone-detail-hero { display: grid; min-height: 490px; grid-template-columns: 1.1fr .9fr; background: #22231f; }
+.stone-detail-visual { min-height: 490px; background: #2b2c27; }
+.stone-detail-visual img { width: 100%; height: 100%; min-height: 490px; object-fit: cover; }
+.stone-detail-visual.placeholder { display: grid; place-items: center; padding: 30px; color: #d8d0c1; text-align: center; }
+.stone-detail-visual.placeholder span { max-width: 270px; padding: 19px; border: 1px solid rgba(255,255,255,.25); font-size: 12px; }
+.stone-detail-copy { align-self: center; padding: clamp(30px, 6vw, 75px); }
+.stone-detail-eyebrow { color: #c6b393; font-size: 9px; font-weight: 700; letter-spacing: .18em; }
+.stone-detail-copy h1 { margin: 15px 0 17px; font-family: var(--display); font-size: clamp(38px, 5vw, 62px); font-weight: 500; letter-spacing: -.05em; line-height: 1.08; }
+.stone-detail-copy > p:not(.stone-detail-eyebrow) { color: #c7c4bc; font-size: 14px; line-height: 1.85; }
+.stone-detail-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 27px; }
+.stone-detail-actions a { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; padding: 0 16px; font-size: 11px; font-weight: 600; }
+.stone-detail-actions a:first-child { color: #20211e; background: #f2eee5; }
+.stone-detail-actions a:last-child { border: 1px solid rgba(255,255,255,.35); color: #f2eee5; }
+.stone-detail-content { display: grid; grid-template-columns: 1fr 1fr; gap: 10%; padding: 72px 0; }
+.stone-detail-content h2 { margin: 0 0 17px; font-size: clamp(26px, 3vw, 36px); font-weight: 500; letter-spacing: -.04em; }
+.stone-detail-content h2 em { color: #c6b393; font-family: var(--serif); font-weight: 400; }
+.stone-detail-content p { color: #c7c4bc; font-size: 13px; }
+.stone-spec-list { margin: 0; border-top: 1px solid rgba(255,255,255,.18); }
+.stone-spec-list > div { display: grid; grid-template-columns: 145px 1fr; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,.18); }
+.stone-spec-list dt { color: #c6b393; font-size: 10px; font-weight: 600; }
+.stone-spec-list dd { margin: 0; color: #e8e5de; font-size: 11px; }
+.stone-detail-note { margin: 0; padding: 19px; border-left: 2px solid #b8a17c; color: #c7c4bc; background: #22231f; font-size: 11px; line-height: 1.8; }
+.stone-detail-cta { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 33px; background: #e9e2d6; color: #242521; }
+.stone-detail-cta h2 { max-width: 600px; margin: 0; font-size: clamp(25px, 3vw, 38px); line-height: 1.2; }
+.stone-detail-cta a { flex: 0 0 auto; padding: 16px 19px; color: #fff; background: #242521; font-size: 11px; font-weight: 600; }
+.stone-detail-footer { display: flex; justify-content: space-between; gap: 20px; padding: 25px 0; color: #bcb9b0; font-size: 10px; }
+@media (max-width: 760px) {
+  .stone-detail-header { min-height: 69px; padding: 10px 18px; }
+  .stone-detail-header img { width: 177px; height: 46px; }
+  .stone-detail-header a:last-child { font-size: 10px; }
+  .stone-detail-main { width: calc(100% - 32px); padding: 20px 0 50px; }
+  .stone-detail-hero { grid-template-columns: 1fr; }
+  .stone-detail-visual, .stone-detail-visual img { min-height: 0; height: min(76vw, 380px); }
+  .stone-detail-copy { padding: 27px 22px 30px; }
+  .stone-detail-copy h1 { font-size: clamp(35px, 10vw, 49px); }
+  .stone-detail-copy > p:not(.stone-detail-eyebrow) { font-size: 12px; }
+  .stone-detail-content { grid-template-columns: 1fr; gap: 34px; padding: 45px 0; }
+  .stone-spec-list > div { grid-template-columns: 110px 1fr; }
+  .stone-detail-cta { align-items: flex-start; flex-direction: column; padding: 25px 21px; }
+  .stone-detail-footer { flex-direction: column; gap: 8px; }
+}
