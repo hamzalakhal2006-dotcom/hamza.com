@@ -52,20 +52,3 @@ window.hamzaStoneCatalog = [
   { name: "Ardoise Noir Volcan", image: "ardoise-noir-volcan-1.jpg", url: "ardoise-noir-volcan", color: "sombre", finish: "Naturelle", group: "Ardoise" },
   { name: "Ardoise Bronzée", image: "ardoise-bronzee-1.jpg", url: "ardoise-bronzee", color: "bronzé", finish: "Naturelle", group: "Ardoise" }
 ];
-
-const localStoneImages = new Set([
-  "pierre-volcanique-noire.jpg",
-  "travertin-volubilis.jpg",
-  "realisation-exterieur.jpg",
-  "eclate-beige.jpg",
-  "pierre-taza-grise.jpg",
-  "granit-gris-khenifra.jpg",
-  "noir-azilal.jpg"
-]);
-
-window.hamzaStoneCatalog.forEach((stone) => {
-  const folder = localStoneImages.has(stone.image)
-    ? "images/stones"
-    : "images/stones/official";
-  stone.image = `${folder}/${stone.image}`;
-});

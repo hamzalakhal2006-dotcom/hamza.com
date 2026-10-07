@@ -313,6 +313,43 @@ document.addEventListener("DOMContentLoaded", () => {
     if (normalized.includes("granit") || normalized.includes("khenifra")) return "granit";
     return "autres";
   };
+  const getStoneImageDirectory = (name) => {
+    const normalized = normalizeCatalogValue(name);
+    if (/^(beige taza|pierre taza beige)/.test(normalized)) return "beige-taza";
+    if (/^(gris taza|pierre taza grise|eclate gris taza)/.test(normalized)) return "pierre-taza-grise";
+    if (normalized.includes("volubilis")) return "travertin-volubilis";
+    if (normalized.includes("ardoise")) return "ardoise-multicolore";
+    if (normalized.includes("marbre") || normalized === "zola vieille" || normalized === "bir jdid") return "marbre";
+    if (normalized.includes("khenifra") || normalized.includes("granit")) return "granit";
+    if (normalized.includes("azilal")) return "noir-azilal";
+    if (normalized.includes("volcanique")) return "pierre-volcanique-noire";
+    if (normalized.includes("eclate")) return "eclate-beige";
+    if (normalized.includes("carthabon")) return "pierre-naturelle";
+    return "pierre-naturelle";
+  };
+  const getStoneImageCandidates = (name, filename, legacySource = "") => {
+    const basename = filename.replace(/\.[^.]+$/, "");
+    const extensions = ["jpg", "jpeg", "png", "webp"];
+    const paths = [
+      ...extensions.map((extension) => `stones/${getStoneImageDirectory(name)}/${basename}.${extension}`),
+      ...extensions.map((extension) => `images/stones/${basename}.${extension}`),
+      ...extensions.map((extension) => `images/stones/official/${basename}.${extension}`),
+      legacySource,
+      ...extensions.map((extension) => `../images/stones/${basename}.${extension}`),
+      ...extensions.map((extension) => `../images/stones/official/${basename}.${extension}`)
+    ];
+    return [...new Set(paths.filter(Boolean))];
+  };
+  const setImageSourceWithFallback = (image, candidates) => {
+    let candidateIndex = 0;
+    image.onerror = () => {
+      candidateIndex += 1;
+      if (candidateIndex < candidates.length) {
+        image.src = candidates[candidateIndex];
+      }
+    };
+    image.src = candidates[candidateIndex];
+  };
   const collectionDefinitions = [
     { id: "taza", label: "Pierre de Taza" },
     { id: "travertin", label: "Travertin" },
@@ -334,8 +371,16 @@ document.addEventListener("DOMContentLoaded", () => {
     card.dataset.collection = getStoneCollection(name);
     card.__referenceCount = 0;
     const image = card.querySelector(".stone-image img");
+    const imageSource = image?.getAttribute("src") || "";
+    const imageFilename = imageSource.split("/").pop() || "";
     card.__gallery = image
-      ? [{ src: image.getAttribute("src") || "", alt: image.alt, label: name, url: "" }]
+      ? [{
+        src: imageSource,
+        imageCandidates: getStoneImageCandidates(name, imageFilename, imageSource),
+        alt: image.alt,
+        label: name,
+        url: ""
+      }]
       : [];
     cardsByFamily.set(normalizeCatalogValue(family), card);
   });
@@ -345,7 +390,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const officialStones = Array.isArray(window.hamzaStoneCatalog) ? window.hamzaStoneCatalog : [];
 
   officialStones.forEach((stone) => {
-    const source = stone.image;
+    const imageCandidates = getStoneImageCandidates(
+      stone.name,
+      stone.image,
+      `images/stones/official/${stone.image}`
+    );
+    const source = imageCandidates[0];
     const family = getStoneFamily(stone.name);
     const familyKey = normalizeCatalogValue(family);
     const currentCard = cardsByFamily.get(familyKey);
@@ -397,6 +447,7 @@ document.addEventListener("DOMContentLoaded", () => {
     usedImageSources.add(source);
     const galleryItem = {
       src: source,
+      imageCandidates,
       alt: `${stone.name} — pierre naturelle`,
       label: stone.name,
       url: `https://lespierresdehamza.com/produits/${stone.url}`
@@ -426,7 +477,7 @@ document.addEventListener("DOMContentLoaded", () => {
     imageLink.setAttribute("aria-label", `Ouvrir la galerie photos — ${gallery[0].label}`);
     const image = imageLink.querySelector("img");
     if (image) {
-      image.setAttribute("src", gallery[0].src);
+      setImageSourceWithFallback(image, gallery[0].imageCandidates || [gallery[0].src]);
       image.setAttribute("alt", gallery[0].alt);
       image.setAttribute("loading", "lazy");
       image.setAttribute("decoding", "async");
@@ -459,7 +510,7 @@ document.addEventListener("DOMContentLoaded", () => {
       activeIndex = (index + gallery.length) % gallery.length;
       const item = gallery[activeIndex];
       if (image) {
-        image.src = item.src;
+        setImageSourceWithFallback(image, item.imageCandidates || [item.src]);
         image.alt = item.alt;
       }
       imageLink.href = item.url || "#galerie-pierres";
@@ -491,7 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
       imageLink.href = group.gallery[0].url || "#galerie-pierres";
       imageLink.setAttribute("aria-label", `Ouvrir la galerie photos — ${group.gallery[0].label}`);
       const image = document.createElement("img");
-      image.src = group.gallery[0].src;
+      setImageSourceWithFallback(image, group.gallery[0].imageCandidates || [group.gallery[0].src]);
       image.alt = group.gallery[0].alt;
       image.loading = "lazy";
       image.decoding = "async";
@@ -712,7 +763,7 @@ document.addEventListener("DOMContentLoaded", () => {
       slide.element.type = "button";
       slide.element.className = "stone-orbit-slide";
       slide.element.setAttribute("aria-label", `Voir ${slide.item.label} en grand`);
-      slide.image.src = slide.item.src;
+      setImageSourceWithFallback(slide.image, slide.item.imageCandidates || [slide.item.src]);
       slide.image.alt = slide.item.alt;
       slide.image.loading = "lazy";
       slide.image.decoding = "async";
@@ -930,7 +981,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!item || !(lightboxImage instanceof HTMLImageElement)) {
       return;
     }
-    lightboxImage.src = item.src;
+    setImageSourceWithFallback(lightboxImage, item.imageCandidates || [item.src]);
     lightboxImage.alt = item.alt;
     if (lightboxName) lightboxName.textContent = item.family || item.label;
     if (lightboxCaption) lightboxCaption.textContent = item.family ? item.label : "";
